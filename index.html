@@ -1,110 +1,206 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Daily Site Report</title>
+    <title>GPS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: sans-serif;
+            margin: 0;
             padding: 20px;
+        }
+        .container {
             max-width: 600px;
-            background-color: #f4f4f4;
+            margin: 0 auto;
         }
-        h2 {
-            text-align: center;
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        input, textarea {
+        .logo {
+            max-width: 100px; /* Adjust as needed */
+            margin-right: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="date"],
+        textarea {
             width: 100%;
             padding: 8px;
-            margin: 5px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        textarea {
+            resize: vertical;
         }
         table {
             width: 100%;
-            margin-top: 10px;
             border-collapse: collapse;
+            margin-bottom: 15px;
         }
         th, td {
-            padding: 8px;
             border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
         }
-        button {
-            padding: 10px;
-            background-color: #28a745;
-            color: white;
+        .btn {
+            background-color: #4CAF50; /* Green */
             border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #218838;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <img src="logo.png" alt="Logo" class="logo">
+            <h2>DAILY SITE REPORT</h2><br>
+        </div>
 
-    <h2>Daily Site Report</h2>
+        <form id="reportForm">
+            <!-- Single Entry Fields -->
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <div class="form-group">
+                <label for="foremanName">Foreman Name:</label>
+                <input type="text" id="foremanName" name="foremanName" required>
+            </div>
+            <div class="form-group">
+                <label for="foremanID">Foreman ID:</label>
+                <input type="text" id="foremanID" name="foremanID" required>
+            </div>
+            <div class="form-group">
+                <label for="wiReference">WI Reference:</label>
+                <input type="text" id="wiReference" name="wiReference" required>
+            </div>
+            <div class="form-group">
+                <label for="wiTitle">WI Title:</label>
+                <input type="text" id="wiTitle" name="wiTitle" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description of Work:</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+            </div>
 
-    <form id="dataForm">
-        <label>Date:</label>
-        <input type="date" name="date" required>
+            <!-- Multiple Entry Fields -->
+            <div class="form-group">
+                <h3>Resource Details</h3>
+                <table id="personnelTable">
+                    <thead>
+                        <tr>
+                            <th>Resource</th>
+                            <th>Designation</th>
+                            <th>ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Entries will be added here dynamically -->
+                    </tbody>
+                </table>
+                <button type="button" class="btn" onclick="addPersonnel()">Add Resource</button>
+                <button type="button" class="btn" onclick="removeLastPersonnel()">Remove Last Resource</button>
+            </div>
 
-        <label>Foreman Name:</label>
-        <input type="text" name="foreman_name" required>
-
-        <label>Foreman ID:</label>
-        <input type="text" name="foreman_id" required>
-
-        <label>WI Reference:</label>
-        <input type="text" name="wi_reference" required>
-
-        <label>WI Title:</label>
-        <input type="text" name="wi_title" required>
-
-        <label>Description of Work:</label>
-        <textarea name="description" rows="3" required></textarea>
-
-        <h3>Personnel Details</h3>
-        <table id="personTable">
-            <tr>
-                <th>Sl. No.</th>
-                <th>Name of the Person</th>
-                <th>Designation</th>
-                <th>ID</th>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td><input type="text" name="name[]" required></td>
-                <td><input type="text" name="designation[]" required></td>
-                <td><input type="text" name="id[]" required></td>
-            </tr>
-        </table>
-        <button type="button" onclick="addRow()">Add More</button>
-
-        <button type="submit">Submit</button>
-    </form>
+            <!-- Submit Button -->
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    </div>
 
     <script>
-        function addRow() {
-            var table = document.getElementById("personTable");
-            var rowCount = table.rows.length;
-            var row = table.insertRow(rowCount);
-            row.innerHTML = `<td>${rowCount}</td>
-                             <td><input type="text" name="name[]" required></td>
-                             <td><input type="text" name="designation[]" required></td>
-                             <td><input type="text" name="id[]" required></td>`;
+        let personnelEntries = [];
+
+        function addPersonnel() {
+            const name = prompt("Enter Resource:");
+            const designation = prompt("Enter Designation:");
+            const id = prompt("Enter ID:");
+
+            if (name && designation && id) {
+                personnelEntries.push({ name, designation, id });
+                updatePersonnelTable();
+            } else {
+                alert("Please fill in all fields.");
+            }
         }
 
-        document.getElementById("dataForm").onsubmit = function(e) {
+        function removeLastPersonnel() {
+            if (personnelEntries.length > 0) {
+                personnelEntries.pop();
+                updatePersonnelTable();
+            } else {
+                alert("No entries to remove.");
+            }
+        }
+
+        function updatePersonnelTable() {
+            const tbody = document.querySelector("#personnelTable tbody");
+            tbody.innerHTML = personnelEntries.map(entry => `
+                <tr>
+                    <td>${entry.name}</td>
+                    <td>${entry.designation}</td>
+                    <td>${entry.id}</td>
+                </tr>
+            `).join("");
+        }
+
+        document.getElementById("reportForm").onsubmit = function(e) {
             e.preventDefault();
-            
-            var formData = new FormData(document.getElementById("dataForm"));
-            fetch("https://script.google.com/macros/s/AKfycbxr3bFD5uYpRhkhHhQeotZVExRyiVmIAGobTHfjmflOzWu_eJ-_stR95pdIUnAJBvBy/exec", { method: "POST", body: formData })
-                .then(response => response.text())
-                .then(data => alert("Data Submitted Successfully!"))
-                .catch(error => alert("Error: " + error));
+
+            if (personnelEntries.length === 0) {
+                alert("No personnel entries to submit.");
+                return;
+            }
+
+            const formData = {
+                date: document.getElementById("date").value,
+                foremanName: document.getElementById("foremanName").value,
+                foremanID: document.getElementById("foremanID").value,
+                wiReference: document.getElementById("wiReference").value,
+                wiTitle: document.getElementById("wiTitle").value,
+                description: document.getElementById("description").value,
+                personnel: personnelEntries
+            };
+
+            // Convert data to query parameters
+            const queryParams = new URLSearchParams();
+            queryParams.set("date", formData.date);
+            queryParams.set("foremanName", formData.foremanName);
+            queryParams.set("foremanID", formData.foremanID);
+            queryParams.set("wiReference", formData.wiReference);
+            queryParams.set("wiTitle", formData.wiTitle);
+            queryParams.set("description", formData.description);
+            queryParams.set("personnel", JSON.stringify(formData.personnel));
+
+            // Send data using GET request
+            fetch(`https://script.google.com/macros/s/AKfycbworvUHx0j7Vkoyl-9KkxuEd56kbMXAbwZF3mCbTou2FTedpY2vg93ErF7UcYVYvJuI/exec?${queryParams.toString()}`, {
+                method: "GET",
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert("Data Submitted Successfully!");
+                personnelEntries = [];
+                updatePersonnelTable();
+                document.getElementById("reportForm").reset();
+            })
+            .catch(error => alert("Error: " + error));
         };
     </script>
-
 </body>
 </html>
