@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Site Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            max-width: 600px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            text-align: center;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Daily Site Report</h2>
+
+    <form id="dataForm">
+        <label>Date:</label>
+        <input type="date" name="date" required>
+
+        <label>Foreman Name:</label>
+        <input type="text" name="foreman_name" required>
+
+        <label>Foreman ID:</label>
+        <input type="text" name="foreman_id" required>
+
+        <label>WI Reference:</label>
+        <input type="text" name="wi_reference" required>
+
+        <label>WI Title:</label>
+        <input type="text" name="wi_title" required>
+
+        <label>Description of Work:</label>
+        <textarea name="description" rows="3" required></textarea>
+
+        <h3>Personnel Details</h3>
+        <table id="personTable">
+            <tr>
+                <th>Sl. No.</th>
+                <th>Name of the Person</th>
+                <th>Designation</th>
+                <th>ID</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td><input type="text" name="name[]" required></td>
+                <td><input type="text" name="designation[]" required></td>
+                <td><input type="text" name="id[]" required></td>
+            </tr>
+        </table>
+        <button type="button" onclick="addRow()">Add More</button>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        function addRow() {
+            var table = document.getElementById("personTable");
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            row.innerHTML = `<td>${rowCount}</td>
+                             <td><input type="text" name="name[]" required></td>
+                             <td><input type="text" name="designation[]" required></td>
+                             <td><input type="text" name="id[]" required></td>`;
+        }
+
+        document.getElementById("dataForm").onsubmit = function(e) {
+            e.preventDefault();
+            
+            var formData = new FormData(document.getElementById("dataForm"));
+            fetch("https://script.google.com/macros/s/AKfycbxr3bFD5uYpRhkhHhQeotZVExRyiVmIAGobTHfjmflOzWu_eJ-_stR95pdIUnAJBvBy/exec", { method: "POST", body: formData })
+                .then(response => response.text())
+                .then(data => alert("Data Submitted Successfully!"))
+                .catch(error => alert("Error: " + error));
+        };
+    </script>
+
+</body>
+</html>
