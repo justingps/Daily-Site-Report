@@ -64,6 +64,10 @@
             cursor: pointer;
             border-radius: 4px;
         }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -120,7 +124,7 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn">Submit</button>
+            <button type="submit" class="btn" id="submitButton">Submit</button>
         </form>
     </div>
 
@@ -163,8 +167,15 @@
         document.getElementById("reportForm").onsubmit = function(e) {
             e.preventDefault();
 
+            // Disable the submit button to prevent multiple submissions
+            const submitButton = document.getElementById("submitButton");
+            submitButton.disabled = true;
+            submitButton.innerText = "Submitting...";
+
             if (personnelEntries.length === 0) {
                 alert("No personnel entries to submit.");
+                submitButton.disabled = false; // Re-enable the button
+                submitButton.innerText = "Submit";
                 return;
             }
 
@@ -199,7 +210,14 @@
                 updatePersonnelTable();
                 document.getElementById("reportForm").reset();
             })
-            .catch(error => alert("Error: " + error));
+            .catch(error => {
+                alert("Error: " + error);
+            })
+            .finally(() => {
+                // Re-enable the submit button after the request is complete
+                submitButton.disabled = false;
+                submitButton.innerText = "Submit";
+            });
         };
     </script>
 </body>
