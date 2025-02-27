@@ -68,6 +68,41 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
+        /* Modal Dialog Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .modal-content label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .modal-content button {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -119,7 +154,7 @@
                         <!-- Entries will be added here dynamically -->
                     </tbody>
                 </table>
-                <button type="button" class="btn" onclick="addPersonnel()">Add Resource</button>
+                <button type="button" class="btn" id="addResourceButton">Add Resource</button>
                 <button type="button" class="btn" onclick="removeLastPersonnel()">Remove Last Resource</button>
             </div>
 
@@ -128,22 +163,68 @@
         </form>
     </div>
 
+    <!-- Modal Dialog -->
+    <div id="resourceModal" class="modal">
+        <div class="modal-content">
+            <label for="resourceName">Resource Name:</label>
+            <input type="text" id="resourceName" required>
+            <label for="resourceDesignation">Designation:</label>
+            <input type="text" id="resourceDesignation" list="designationSuggestions" required>
+            <datalist id="designationSuggestions">
+                <option value="Engineer">
+                <option value="Supervisor">
+                <option value="Technician">
+                <option value="Laborer">
+                <option value="Manager">
+            </datalist>
+            <label for="resourceID">ID:</label>
+            <input type="text" id="resourceID" required>
+            <br><br>
+            <button type="button" class="btn" id="addButton">Add</button>
+            <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
     <script>
         let personnelEntries = [];
 
-        function addPersonnel() {
-            const name = prompt("Enter Resource:");
-            const designation = prompt("Enter Designation:");
-            const id = prompt("Enter ID:");
+        // Get references to modal and buttons
+        const modal = document.getElementById("resourceModal");
+        const addResourceButton = document.getElementById("addResourceButton");
+        const addButton = document.getElementById("addButton");
 
-            if (name && designation && id) {
-                personnelEntries.push({ name, designation, id });
+        // Open the modal dialog
+        function openModal() {
+            console.log("Opening modal..."); // Debugging
+            modal.style.display = "flex";
+        }
+
+        // Close the modal dialog
+        function closeModal() {
+            console.log("Closing modal..."); // Debugging
+            modal.style.display = "none";
+        }
+
+        // Add resource to the table
+        function addResource() {
+            const resourceName = document.getElementById("resourceName").value;
+            const resourceDesignation = document.getElementById("resourceDesignation").value;
+            const resourceID = document.getElementById("resourceID").value;
+
+            if (resourceName && resourceDesignation && resourceID) {
+                personnelEntries.push({ name: resourceName, designation: resourceDesignation, id: resourceID });
                 updatePersonnelTable();
+                closeModal();
+                // Clear the modal inputs
+                document.getElementById("resourceName").value = "";
+                document.getElementById("resourceDesignation").value = "";
+                document.getElementById("resourceID").value = "";
             } else {
                 alert("Please fill in all fields.");
             }
         }
 
+        // Remove the last resource entry
         function removeLastPersonnel() {
             if (personnelEntries.length > 0) {
                 personnelEntries.pop();
@@ -153,6 +234,7 @@
             }
         }
 
+        // Update the personnel table
         function updatePersonnelTable() {
             const tbody = document.querySelector("#personnelTable tbody");
             tbody.innerHTML = personnelEntries.map(entry => `
@@ -164,6 +246,11 @@
             `).join("");
         }
 
+        // Attach event listeners
+        addResourceButton.addEventListener("click", openModal);
+        addButton.addEventListener("click", addResource);
+
+        // Handle form submission
         document.getElementById("reportForm").onsubmit = function(e) {
             e.preventDefault();
 
