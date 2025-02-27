@@ -19,7 +19,7 @@
             margin-bottom: 20px;
         }
         .logo {
-            max-width: 100px;
+            max-width: 100px; /* Adjust as needed */
             margin-right: 20px;
         }
         .form-group {
@@ -31,7 +31,6 @@
         }
         input[type="text"],
         input[type="date"],
-        input[type="password"],
         textarea {
             width: 100%;
             padding: 8px;
@@ -53,7 +52,7 @@
             text-align: left;
         }
         .btn {
-            background-color: #4CAF50;
+            background-color: #4CAF50; /* Green */
             border: none;
             color: white;
             padding: 10px 20px;
@@ -65,50 +64,17 @@
             cursor: pointer;
             border-radius: 4px;
         }
-        #loginContainer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        #mainContent {
-            display: none;
-        }
-        .resource-inputs {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .resource-inputs input {
-            flex: 1;
-        }
     </style>
 </head>
 <body>
-    
-    <div id="loginContainer">
-        <h2>Login</h2>
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <button class="btn" onclick="checkLogin()">Login</button>
-        <p id="loginError" style="color: red; display: none;">Invalid credentials. Please try again.</p>
-                <h6>Gulf Petrochemical Services & Trading LLC</h6>
-    </div>
-
-    <div id="mainContent" class="container">
+    <div class="container">
         <div class="header">
             <img src="logo.png" alt="Logo" class="logo">
             <h2>DAILY SITE REPORT</h2><br>
         </div>
 
         <form id="reportForm">
+            <!-- Single Entry Fields -->
             <div class="form-group">
                 <label for="date">Date:</label>
                 <input type="date" id="date" name="date" required>
@@ -134,6 +100,7 @@
                 <textarea id="description" name="description" rows="4" required></textarea>
             </div>
 
+            <!-- Multiple Entry Fields -->
             <div class="form-group">
                 <h3>Resource Details</h3>
                 <table id="personnelTable">
@@ -144,56 +111,30 @@
                             <th>ID</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        <!-- Entries will be added here dynamically -->
+                    </tbody>
                 </table>
-                <div id="resourceInputs" class="resource-inputs" style="display: none;">
-                    <input type="text" id="resourceName" placeholder="Resource" required>
-                    <input type="text" id="resourceDesignation" placeholder="Designation" required>
-                    <input type="text" id="resourceID" placeholder="ID" required>
-                    <button type="button" class="btn" onclick="addPersonnel()">Confirm</button>
-                </div>
-                <button type="button" class="btn" onclick="showResourceInputs()">Add Resource</button>
-                <button type="button" class="btn" onclick="removeLastPersonnel()">Remove Resource</button>
+                <button type="button" class="btn" onclick="addPersonnel()">Add Resource</button>
+                <button type="button" class="btn" onclick="removeLastPersonnel()">Remove Last Resource</button>
             </div>
 
+            <!-- Submit Button -->
             <button type="submit" class="btn">Submit</button>
         </form>
     </div>
 
     <script>
-        const validUsername = "admin";
-        const validPassword = "admin";
-
-        function checkLogin() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            if (username === validUsername && password === validPassword) {
-                document.getElementById("loginContainer").style.display = "none";
-                document.getElementById("mainContent").style.display = "block";
-            } else {
-                document.getElementById("loginError").style.display = "block";
-            }
-        }
-
         let personnelEntries = [];
 
-        function showResourceInputs() {
-            const resourceInputs = document.getElementById("resourceInputs");
-            resourceInputs.style.display = "flex";
-            document.getElementById("resourceName").value = "";
-            document.getElementById("resourceDesignation").value = "";
-            document.getElementById("resourceID").value = "";
-        }
-
         function addPersonnel() {
-            const name = document.getElementById("resourceName").value;
-            const designation = document.getElementById("resourceDesignation").value;
-            const id = document.getElementById("resourceID").value;
+            const name = prompt("Enter Resource:");
+            const designation = prompt("Enter Designation:");
+            const id = prompt("Enter ID:");
 
             if (name && designation && id) {
                 personnelEntries.push({ name, designation, id });
                 updatePersonnelTable();
-                document.getElementById("resourceInputs").style.display = "none";
             } else {
                 alert("Please fill in all fields.");
             }
@@ -237,6 +178,7 @@
                 personnel: personnelEntries
             };
 
+            // Convert data to query parameters
             const queryParams = new URLSearchParams();
             queryParams.set("date", formData.date);
             queryParams.set("foremanName", formData.foremanName);
@@ -246,6 +188,7 @@
             queryParams.set("description", formData.description);
             queryParams.set("personnel", JSON.stringify(formData.personnel));
 
+            // Send data using GET request
             fetch(`https://script.google.com/macros/s/AKfycbworvUHx0j7Vkoyl-9KkxuEd56kbMXAbwZF3mCbTou2FTedpY2vg93ErF7UcYVYvJuI/exec?${queryParams.toString()}`, {
                 method: "GET",
             })
