@@ -10,7 +10,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px; /* Increased width for better horizontal layout */
             margin: 0 auto;
         }
         .header {
@@ -52,7 +52,6 @@
             text-align: left;
         }
         .btn {
-            background-color: #4CAF50; /* Green */
             border: none;
             color: white;
             padding: 10px 20px;
@@ -63,45 +62,38 @@
             margin: 4px 2px;
             cursor: pointer;
             border-radius: 4px;
+            width: 180px; /* Fixed width for all buttons */
         }
         .btn:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
-        /* Modal Dialog Styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+        /* Green button for Add Resource and Submit */
+        .btn-add {
+            background-color: #4CAF50; /* Green */
         }
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            width: 90%;
-            max-width: 400px;
+        /* Red button for Remove Last Resource */
+        .btn-remove {
+            background-color: #f44336; /* Red */
         }
-        .modal-content label {
-            display: block;
-            margin-bottom: 5px;
+        /* Horizontal layout for resource entry fields */
+        .resource-entry {
+            display: flex;
+            gap: 10px; /* Space between fields */
+            margin-bottom: 15px;
         }
-        .modal-content input {
-            width: 100%;
+        .resource-entry input {
+            flex: 1; /* Distribute space equally */
             padding: 8px;
-            margin-bottom: 10px;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        .modal-content button {
-            margin-right: 10px;
+        /* Container for buttons */
+        .button-container {
+            display: flex;
+            gap: 10px; /* Space between buttons */
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -145,214 +137,54 @@
                 <table id="personnelTable">
                     <thead>
                         <tr>
-                            <th>Resource</th>
-                            <th>Designation</th>
-                            <th>ID</th>
+                            <th>Resource ID</th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- Entries will be added here dynamically -->
                     </tbody>
                 </table>
-                <button type="button" class="btn" id="addResourceButton">Add Resource</button>
-                <button type="button" class="btn" onclick="removeLastPersonnel()">Remove Last Resource</button>
+
+                <!-- Horizontal Resource Entry Fields -->
+                <div class="resource-entry">
+                    <input type="text" id="resourceID" placeholder="Resource ID (Required)">
+                </div>
+
+                <!-- Button Container -->
+                <div class="button-container">
+                    <button type="button" class="btn btn-add" onclick="addResource()">Add Resource</button>
+                    <button type="button" class="btn btn-remove" onclick="removeLastPersonnel()">Remove Last Resource</button>
+                </div>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn" id="submitButton">Submit</button>
+            <button type="submit" class="btn btn-add" id="submitButton">Submit</button>
         </form>
-    </div>
-
-    <!-- Modal Dialog -->
-    <div id="resourceModal" class="modal">
-        <div class="modal-content">
-            <label for="resourceName">Resource Name:</label>
-            <input type="text" id="resourceName" required>
-            <label for="resourceDesignation">Designation:</label>
-            <input type="text" id="resourceDesignation" list="designationSuggestions" required>
-            <datalist id="designationSuggestions">
-                    <option value="Painter">
-                    <option value="Foreman (All Trades)">
-                    <option value="Welder – CS">
-                    <option value="Welder - SS">
-                    <option value="Welder - DSS/SDSS">
-                    <option value="Mason/Plasterer">
-                    <option value="Carpenter/Joiner">
-                    <option value="Bar Bender/Steel Fixer">
-                    <option value="Tiler">
-                    <option value="Pipefitter">
-                    <option value="Millwright Fitter">
-                    <option value="Banksman">
-                    <option value="Rigger">
-                    <option value="Scaffolder">
-                    <option value="Sheet Metal Worker">
-                    <option value="Lagger/Insulator">
-                    <option value="Plumber">
-                    <option value="HV Cable Jointer">
-                    <option value="HV Electrical Technician">
-                    <option value="OHL Electrical Technician (Lineman)">
-                    <option value="Commissioning Technician">
-                    <option value="Instrumentation Technician">
-                    <option value="Electrical Technician">
-                    <option value="NDT Technician">
-                    <option value="Torquing Technician">
-                    <option value="Male Nurse - Site">
-                    <option value="Equipment/Plant Operator">
-                    <option value="Crane Operator">
-                    <option value="Light Duty Driver">
-                    <option value="Heavy Duty Driver">
-                    <option value="Laborer/Helper">
-                    <option value="Storekeeper - Site">
-                    <option value="Material Controller - Site">
-                    <option value="Concrete Mixer (21/14 Min.)">
-                    <option value="Mobile Dumper (1.00 M3 Capacity)">
-                    <option value="Compactor (Plate)">
-                    <option value="Vibrating Poker (50mm Diameter)">
-                    <option value="Pedestrian Roller">
-                    <option value="5-ton Roller">
-                    <option value="10-ton Roller">
-                    <option value="JCB 3CX Backhoe or Similar">
-                    <option value="2WD JCB">
-                    <option value="4WD JCB">
-                    <option value="4WD Heavy JCB">
-                    <option value="20T Excavator Complete with Rock Breaker">
-                    <option value="30T Excavator Complete with Rock Breaker">
-                    <option value="Excavator - Up to 30T">
-                    <option value="Excavator With Rock Breaker Arrangement - Up to 20T">
-                    <option value="Excavator With Rock Breaker Arrangement - 21T to 40T">
-                    <option value="Wheeled Excavator (JCB or Equivalent)">
-                    <option value="Tipper Truck 12m³">
-                    <option value="Tipper Truck 18m³">
-                    <option value="Tipper Truck 36m³">
-                    <option value="Tipping Trailer 35m³ C/W P/Mover">
-                    <option value="Construction Water Tanker 20m³">
-                    <option value="Bulldozer Cat D8R or Similar">
-                    <option value="Motor Grader Cat 14H or Similar">
-                    <option value="Motor Scraper (Cat 621G or Similar)">
-                    <option value="Vibratory Roller 10T Dynapac CA25 or Similar">
-                    <option value="Tracked Loading Shovel (CAT 966G or Similar)">
-                    <option value="Jackhammer - (Compressor Jackhammer for Hand Excavation)">
-                    <option value="Scabbler Machine - (Pneumatic Hand Operated Scabbler 250cfm)">
-                    <option value="Welding Truck (Including Weld Set and All Other Required Equipment)">
-                    <option value="Welding Diesel Generator Set">
-                    <option value="Hand Drilling Machine">
-                    <option value="Mobile Drilling Machine (For Pipes or Steel Plates Up to 25mm Thickness)">
-                    <option value="Rig (Small Rig to Drill for OHL Poles)">
-                    <option value="Side Boom Capable of Handling Up to 24" DRL Sch 80">
-                    <option value="Floor Cutting Machine Up to 150mm Floor Thickness">
-                    <option value="Hilti Breaker (TE 500 or Equivalent)">
-                    <option value="Gas Cutting Set">
-                    <option value="Torquing Machine (Air/Hydraulic Driven) - Capable of Torquing Bolts Up to 1.5" Diameter">
-                    <option value="Heavy Duty Cold Cutting Machine - Capable of Automatic Cutting CS Pipe Up to 24" Sch 80">
-                    <option value="High-Pressure Test Pump - Capable of Testing Piping/Pipelines Up to 400 Bar">
-                    <option value="Shaving Machine With Power Drive (Up to 12" Dia.)">
-                    <option value="Mobile Crane - Up to 15-ton Capacity">
-                    <option value="Mobile Crane - 15 to 25-ton Capacity">
-                    <option value="Mobile Crane - 25 to 30-ton Capacity">
-                    <option value="Mobile Crane - 31 to 50-ton Capacity">
-                    <option value="Mobile Crane - 80-ton Capacity">
-                    <option value="Mobile Crane - 120-ton Capacity">
-                    <option value="Fork Lift Truck 5-ton Capacity">
-                    <option value="Fork Lift Truck Up to 10 - 20-ton Capacity">
-                    <option value="Cherry Picker/Scissor Lift/Manlift - Capable of Lifting Up to 15m Height, 500kg">
-                    <option value="Side Boom - (Caterpillar Model 583 or Equivalent)">
-                    <option value="Lowbed Trailer Complete With Prime Mover - 40' and Up to 40T">
-                    <option value="Flatbed Trailer Complete With Prime Mover - 12m">
-                    <option value="Flatbed Trailer Complete With Prime Mover - 18m">
-                    <option value="Mack Truck Complete With Winch & 40ft x 50-ton Trailer">
-                    <option value="500 Gallon Water Tank">
-                    <option value="Pole Trailer With Prime Mover - Capable of Hauling DRL Pipes of 25m">
-                    <option value="Prime Mover 6x4 - To Pull Equivalent of G10.58 With Load">
-                    <option value="Prime Mover 6x6 - To Pull Equivalent of G10.59 With Load">
-                    <option value="3T Truck">
-                    <option value="3T Canter with Hiab">
-                    <option value="3T D/Cab P/Up">
-                    <option value="Crew Cab">
-                    <option value="Pick Up For Isotope (Per ROP Requirements)">
-                    <option value="12-Seat Crew Bus">
-                    <option value="20-Seat Crew Bus">
-                    <option value="45-Seat Crew Bus">
-                    <option value="50-Seat Crew Bus">
-                    <option value="60-Seat Crew Bus">
-                    <option value="1.5 Tonne 4WD Light Vehicle">
-                    <option value="7.5 Tonne 4WD Light Vehicle">
-                    <option value="7.5 Tonne 4WD Light Vehicle With 5-Tonne Crane">
-                    <option value="7.5 Tonne 4WD Heavy Vehicle">
-                    <option value="7.5 Tonne 4WD Heavy Vehicle With 5-Tonne Crane">
-                    <option value="Hiab Truck 4x2">
-                    <option value="Hiab Truck 6x4">
-                    <option value="Hiab Truck 8x8">
-                    <option value="Skid Truck C/W 3-ton Hiab Crane">
-                    <option value="Tractor">
-                    <option value="Fuel Tanker 20m³">
-                    <option value="Potable Water Tanker (5,000 Galls)">
-                    <option value="Potable Water Tanker (10,000 Galls)">
-                    <option value="Brackish Water Tanker (5,000 Galls)">
-                    <option value="Brackish Water Tanker (8,000 Galls)">
-                    <option value="Brackish Water Tanker (10,000 Galls)">
-                    <option value="Potable Water Tanker 20m³ Capacity">
-                    <option value="Potable Water Tanker 30m³ Capacity">
-                    <option value="Potable Water Trailer 35m³ Capacity C/W Prime Mover">
-                    <option value="Vacuum Truck (120bbl)">
-                    <option value="Generator 5KVA to 7.5KVA">
-                    <option value="Generator 12.5KVA to 20KVA">
-                    <option value="Generator (16 KVA)">
-                    <option value="Generator (30 KVA)">
-                    <option value="Generator (45 KVA)">
-                    <option value="Portable Air Compressor - 600-750 CFM">
-                    <option value="Air Compressor 600CFM Diesel C/W Jack Hammer (Including Hoses, Safety Instruments, Etc.)">
-                    <option value="Air Compressor - 1200CFM">
-                    <option value="Scaffolding Rental (For Erected & Tagged Scaffold) - M³/Per Day">
-                    <option value="IR192 Isotope">
-                    <option value="UT Set">
-                    <option value="Permanent Magnet">
-                    <option value="Directional X-Ray Head">
-                    <option value="X-Ray Crawler With Panoramic Head">
-            </datalist>
-            <label for="resourceID">ID:</label>
-            <input type="text" id="resourceID" required>
-            <br><br>
-            <button type="button" class="btn" id="addButton">Add</button>
-            <button type="button" class="btn" onclick="closeModal()">Cancel</button>
-        </div>
     </div>
 
     <script>
         let personnelEntries = [];
 
-        // Get references to modal and buttons
-        const modal = document.getElementById("resourceModal");
-        const addResourceButton = document.getElementById("addResourceButton");
-        const addButton = document.getElementById("addButton");
-
-        // Open the modal dialog
-        function openModal() {
-            console.log("Opening modal..."); // Debugging
-            modal.style.display = "flex";
-        }
-
-        // Close the modal dialog
-        function closeModal() {
-            console.log("Closing modal..."); // Debugging
-            modal.style.display = "none";
+        // Function to get local date and time in ISO format
+        function getLocalDateTime() {
+            const now = new Date();
+            const timezoneOffset = now.getTimezoneOffset() * 60000; // Convert offset to milliseconds
+            const localDateTime = new Date(now - timezoneOffset).toISOString().slice(0, -1); // Remove 'Z' at the end
+            return localDateTime;
         }
 
         // Add resource to the table
         function addResource() {
-            const resourceName = document.getElementById("resourceName").value;
-            const resourceDesignation = document.getElementById("resourceDesignation").value;
             const resourceID = document.getElementById("resourceID").value;
 
-            if (resourceName && resourceDesignation && resourceID) {
-                personnelEntries.push({ name: resourceName, designation: resourceDesignation, id: resourceID });
+            // Only require Resource ID
+            if (resourceID) {
+                personnelEntries.push({ id: resourceID });
                 updatePersonnelTable();
-                closeModal();
-                // Clear the modal inputs
-                document.getElementById("resourceName").value = "";
-                document.getElementById("resourceDesignation").value = "";
+                // Clear the input field
                 document.getElementById("resourceID").value = "";
             } else {
-                alert("Please fill in all fields.");
+                alert("Please fill in the Resource ID.");
             }
         }
 
@@ -371,32 +203,31 @@
             const tbody = document.querySelector("#personnelTable tbody");
             tbody.innerHTML = personnelEntries.map(entry => `
                 <tr>
-                    <td>${entry.name}</td>
-                    <td>${entry.designation}</td>
                     <td>${entry.id}</td>
                 </tr>
             `).join("");
         }
 
-        // Attach event listeners
-        addResourceButton.addEventListener("click", openModal);
-        addButton.addEventListener("click", addResource);
-
         // Handle form submission
         document.getElementById("reportForm").onsubmit = function(e) {
             e.preventDefault();
+
+            // Check if at least one resource entry exists
+            if (personnelEntries.length === 0) {
+                alert("Please add at least one resource entry.");
+                return; // Stop form submission
+            }
 
             // Disable the submit button to prevent multiple submissions
             const submitButton = document.getElementById("submitButton");
             submitButton.disabled = true;
             submitButton.innerText = "Submitting...";
 
-            if (personnelEntries.length === 0) {
-                alert("No personnel entries to submit.");
-                submitButton.disabled = false; // Re-enable the button
-                submitButton.innerText = "Submit";
-                return;
-            }
+            // Get local date and time
+            const postingDateTime = getLocalDateTime(); // Use the new function
+
+            // Get device details
+            const deviceDetails = getDeviceDetails();
 
             const formData = {
                 date: document.getElementById("date").value,
@@ -405,7 +236,9 @@
                 wiReference: document.getElementById("wiReference").value,
                 wiTitle: document.getElementById("wiTitle").value,
                 description: document.getElementById("description").value,
-                personnel: personnelEntries
+                personnel: personnelEntries,
+                postingDateTime: postingDateTime, // Use local date and time
+                deviceDetails: deviceDetails // Add device details
             };
 
             // Convert data to query parameters
@@ -417,9 +250,11 @@
             queryParams.set("wiTitle", formData.wiTitle);
             queryParams.set("description", formData.description);
             queryParams.set("personnel", JSON.stringify(formData.personnel));
+            queryParams.set("postingDateTime", formData.postingDateTime); // Add local date and time
+            queryParams.set("deviceDetails", JSON.stringify(formData.deviceDetails)); // Add device details
 
             // Send data using GET request
-            fetch(`https://script.google.com/macros/s/AKfycbworvUHx0j7Vkoyl-9KkxuEd56kbMXAbwZF3mCbTou2FTedpY2vg93ErF7UcYVYvJuI/exec?${queryParams.toString()}`, {
+            fetch(`https://script.google.com/macros/s/AKfycbxKHNW-LagjvsXe5wbP9JUETnwBcNVV3qfFZ-wswa034KoQVHPPbwnRzbIVsJ4s_pMN/exec?${queryParams.toString()}`, {
                 method: "GET",
             })
             .then(response => response.text())
@@ -438,6 +273,16 @@
                 submitButton.innerText = "Submit";
             });
         };
+
+        // Function to get device details
+        function getDeviceDetails() {
+            const userAgent = navigator.userAgent;
+            const platform = navigator.platform;
+            return {
+                userAgent: userAgent, // Browser and OS details
+                platform: platform // Operating system
+            };
+        }
     </script>
 </body>
 </html>
