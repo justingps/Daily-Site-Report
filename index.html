@@ -10,7 +10,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 800px; /* Increased width for better horizontal layout */
+            max-width: 800px;
             margin: 0 auto;
         }
         .header {
@@ -19,7 +19,7 @@
             margin-bottom: 20px;
         }
         .logo {
-            max-width: 100px; /* Adjust as needed */
+            max-width: 100px;
             margin-right: 20px;
         }
         .form-group {
@@ -62,38 +62,86 @@
             margin: 4px 2px;
             cursor: pointer;
             border-radius: 4px;
-            width: 180px; /* Fixed width for all buttons */
+            width: 180px;
         }
         .btn:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
-        /* Green button for Add Resource and Submit */
         .btn-add {
-            background-color: #4CAF50; /* Green */
+            background-color: #4CAF50;
         }
-        /* Red button for Remove Last Resource */
         .btn-remove {
-            background-color: #f44336; /* Red */
+            background-color: #f44336;
         }
-        /* Horizontal layout for resource entry fields */
         .resource-entry {
             display: flex;
-            gap: 10px; /* Space between fields */
+            gap: 10px;
             margin-bottom: 15px;
         }
         .resource-entry input {
-            flex: 1; /* Distribute space equally */
+            flex: 1;
             padding: 8px;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        /* Container for buttons */
         .button-container {
             display: flex;
-            gap: 10px; /* Space between buttons */
+            gap: 10px;
             margin-bottom: 15px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .modal-buttons button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .modal-buttons .btn-confirm {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .modal-buttons .btn-cancel {
+            background-color: #f44336;
+            color: white;
         }
     </style>
 </head>
@@ -138,6 +186,8 @@
                     <thead>
                         <tr>
                             <th>Resource ID</th>
+                            <th>Normal Hours</th>
+                            <th>OT Hours</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -145,14 +195,9 @@
                     </tbody>
                 </table>
 
-                <!-- Horizontal Resource Entry Fields -->
-                <div class="resource-entry">
-                    <input type="text" id="resourceID" placeholder="Resource ID (Required)">
-                </div>
-
                 <!-- Button Container -->
                 <div class="button-container">
-                    <button type="button" class="btn btn-add" onclick="addResource()">Add Resource</button>
+                    <button type="button" class="btn btn-add" onclick="openModal()">Add Resource</button>
                     <button type="button" class="btn btn-remove" onclick="removeLastPersonnel()">Remove</button>
                 </div>
             </div>
@@ -162,29 +207,60 @@
         </form>
     </div>
 
+    <!-- Modal for Resource Details Input -->
+    <div id="resourceModal" class="modal">
+        <div class="modal-content">
+            <label for="modalResourceID">Resource ID:</label>
+            <input type="text" id="modalResourceID" placeholder="Enter Resource ID" required>
+
+            <label for="modalNormalHours">Normal Hours:</label>
+            <input type="number" id="modalNormalHours" placeholder="Enter Normal Hours" value="10" required>
+
+            <label for="modalOTHours">OT Hours:</label>
+            <input type="number" id="modalOTHours" placeholder="Enter OT Hours" value="0" required>
+
+            <div class="modal-buttons">
+                <button class="btn-confirm" onclick="addResource()">Confirm</button>
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let personnelEntries = [];
 
-        // Function to get local date and time in ISO format
-        function getLocalDateTime() {
-            const now = new Date();
-            const timezoneOffset = now.getTimezoneOffset() * 60000; // Convert offset to milliseconds
-            const localDateTime = new Date(now - timezoneOffset).toISOString().slice(0, -1); // Remove 'Z' at the end
-            return localDateTime;
+        // Function to open the modal
+        function openModal() {
+            // Set default values for Normal Hours and OT Hours
+            document.getElementById("modalNormalHours").value = 10;
+            document.getElementById("modalOTHours").value = 0;
+            document.getElementById("resourceModal").style.display = "flex";
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById("resourceModal").style.display = "none";
+            document.getElementById("modalResourceID").value = ""; // Clear input
+            document.getElementById("modalNormalHours").value = 10; // Reset to default
+            document.getElementById("modalOTHours").value = 0; // Reset to default
         }
 
         // Add resource to the table
         function addResource() {
-            const resourceID = document.getElementById("resourceID").value;
+            const resourceID = document.getElementById("modalResourceID").value;
+            const normalHours = document.getElementById("modalNormalHours").value;
+            const otHours = document.getElementById("modalOTHours").value;
 
-            // Only require Resource ID
-            if (resourceID) {
-                personnelEntries.push({ id: resourceID });
+            if (resourceID && normalHours && otHours) {
+                personnelEntries.push({
+                    id: resourceID,
+                    normalHours: normalHours,
+                    otHours: otHours
+                });
                 updatePersonnelTable();
-                // Clear the input field
-                document.getElementById("resourceID").value = "";
+                closeModal(); // Close the modal after adding
             } else {
-                alert("Please fill in the Resource ID.");
+                alert("Please fill in all fields.");
             }
         }
 
@@ -204,6 +280,8 @@
             tbody.innerHTML = personnelEntries.map(entry => `
                 <tr>
                     <td>${entry.id}</td>
+                    <td>${entry.normalHours}</td>
+                    <td>${entry.otHours}</td>
                 </tr>
             `).join("");
         }
@@ -212,22 +290,16 @@
         document.getElementById("reportForm").onsubmit = function(e) {
             e.preventDefault();
 
-            // Check if at least one resource entry exists
             if (personnelEntries.length === 0) {
                 alert("Please add at least one resource entry.");
-                return; // Stop form submission
+                return;
             }
 
-            // Disable the submit button to prevent multiple submissions
             const submitButton = document.getElementById("submitButton");
             submitButton.disabled = true;
             submitButton.innerText = "Submitting...";
 
-            // Get local date and time
-            const postingDateTime = getLocalDateTime(); // Use the new function
-
-            // Get device details
-            const deviceDetails = getDeviceDetails();
+            const postingDateTime = new Date().toISOString().slice(0, 19).replace("T", " ");
 
             const formData = {
                 date: document.getElementById("date").value,
@@ -237,23 +309,18 @@
                 wiTitle: document.getElementById("wiTitle").value,
                 description: document.getElementById("description").value,
                 personnel: personnelEntries,
-                postingDateTime: postingDateTime, // Use local date and time
-                deviceDetails: deviceDetails // Add device details
+                postingDateTime: postingDateTime,
+                deviceDetails: {
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform
+                }
             };
 
-            // Convert data to query parameters
             const queryParams = new URLSearchParams();
-            queryParams.set("date", formData.date);
-            queryParams.set("foremanName", formData.foremanName);
-            queryParams.set("foremanID", formData.foremanID);
-            queryParams.set("wiReference", formData.wiReference);
-            queryParams.set("wiTitle", formData.wiTitle);
-            queryParams.set("description", formData.description);
-            queryParams.set("personnel", JSON.stringify(formData.personnel));
-            queryParams.set("postingDateTime", formData.postingDateTime); // Add local date and time
-            queryParams.set("deviceDetails", JSON.stringify(formData.deviceDetails)); // Add device details
+            for (const [key, value] of Object.entries(formData)) {
+                queryParams.set(key, typeof value === "object" ? JSON.stringify(value) : value);
+            }
 
-            // Send data using GET request
             fetch(`https://script.google.com/macros/s/AKfycbzxpmGhutyA3d4XgJ2_Bse0NkzyvrnJgVnTr9GfvXnnR0O1PwOzRS-Xdp7nh1-z_ee3/exec?${queryParams.toString()}`, {
                 method: "GET",
             })
@@ -268,21 +335,10 @@
                 alert("Error: " + error);
             })
             .finally(() => {
-                // Re-enable the submit button after the request is complete
                 submitButton.disabled = false;
                 submitButton.innerText = "Submit";
             });
         };
-
-        // Function to get device details
-        function getDeviceDetails() {
-            const userAgent = navigator.userAgent;
-            const platform = navigator.platform;
-            return {
-                userAgent: userAgent, // Browser and OS details
-                platform: platform // Operating system
-            };
-        }
     </script>
 </body>
 </html>
