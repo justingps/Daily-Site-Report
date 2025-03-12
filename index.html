@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>GPS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Add Favicon -->
+    <link rel="icon" type="image/png" href="https://justingps.github.io/dpr/favicon.png">
     <style>
         body {
             font-family: sans-serif;
@@ -31,7 +32,8 @@
         }
         input[type="text"],
         input[type="date"],
-        textarea {
+        textarea,
+        select {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
@@ -144,62 +146,582 @@
             color: white;
         }
     </style>
-</head>
+<style type="text/css">.lf-progress {
+  -webkit-appearance: none;
+  -moz-apperance: none;
+  width: 100%;
+  /* margin: 0 10px; */
+  height: 4px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.lf-progress:focus {
+  outline: none;
+  border: none;
+}
+.lf-progress::-moz-range-track {
+  cursor: pointer;
+  background: none;
+  border: none;
+  outline: none;
+}
+.lf-progress::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  height: 13px;
+  width: 13px;
+  border: 0;
+  border-radius: 50%;
+  background: #0fccce;
+  cursor: pointer;
+}
+.lf-progress::-moz-range-thumb {
+  -moz-appearance: none !important;
+  height: 13px;
+  width: 13px;
+  border: 0;
+  border-radius: 50%;
+  background: #0fccce;
+  cursor: pointer;
+}
+.lf-progress::-ms-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+.lf-progress::-ms-fill-lower {
+  background: #ccc;
+  border-radius: 3px;
+}
+.lf-progress::-ms-fill-upper {
+  background: #ccc;
+  border-radius: 3px;
+}
+.lf-progress::-ms-thumb {
+  border: 0;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: #0fccce;
+  cursor: pointer;
+}
+.lf-progress:focus::-ms-fill-lower {
+  background: #ccc;
+}
+.lf-progress:focus::-ms-fill-upper {
+  background: #ccc;
+}
+.lf-player-container :focus {
+  outline: 0;
+}
+.lf-popover {
+  position: relative;
+}
+
+.lf-popover-content {
+  display: inline-block;
+  position: absolute;
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -10px);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+}
+
+.lf-popover-content.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(0, 0px);
+}
+
+.lf-player-btn-container {
+  display: flex;
+  align-items: center;
+}
+.lf-player-btn {
+  cursor: pointer;
+  fill: #999;
+  width: 14px;
+}
+
+.lf-player-btn.active {
+  fill: #555;
+}
+
+.lf-popover {
+  position: relative;
+}
+
+.lf-popover-content {
+  display: inline-block;
+  position: absolute;
+  background-color: #ffffff;
+  opacity: 1;
+
+  transform: translate(0, -10px);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+  padding: 10px;
+}
+
+.lf-popover-content.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(0, 0px);
+}
+
+.lf-arrow {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  bottom: -9px;
+  border-style: solid;
+  border-width: 10px 10px 0px 10px;
+}
+
+.lf-left-align,
+.lf-left-align .lfarrow {
+  left: 0;
+  right: unset;
+}
+
+.lf-right-align,
+.lf-right-align .lf-arrow {
+  right: 0;
+  left: unset;
+}
+
+.lf-text-input {
+  border: 1px #ccc solid;
+  border-radius: 5px;
+  padding: 3px;
+  width: 60px;
+  margin: 0;
+}
+
+.lf-color-picker {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 90px;
+}
+
+.lf-color-selectors {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.lf-color-component {
+  display: flex;
+  flex-direction: row;
+  font-size: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.lf-color-component strong {
+  width: 40px;
+}
+
+.lf-color-component input[type='range'] {
+  margin: 0 0 0 10px;
+}
+
+.lf-color-component input[type='number'] {
+  width: 50px;
+  margin: 0 0 0 10px;
+}
+
+.lf-color-preview {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 5px;
+}
+
+.lf-preview {
+  height: 60px;
+  width: 60px;
+}
+
+.lf-popover-snapshot {
+  width: 150px;
+}
+.lf-popover-snapshot h5 {
+  margin: 5px 0 10px 0;
+  font-size: 0.75rem;
+}
+.lf-popover-snapshot a {
+  display: block;
+  text-decoration: none;
+}
+.lf-popover-snapshot a:before {
+  content: '⥼';
+  margin-right: 5px;
+}
+.lf-popover-snapshot .lf-note {
+  display: block;
+  margin-top: 10px;
+  color: #999;
+}
+.lf-player-controls > div {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+.lf-player-controls > div:first-child {
+  margin-left: 0px;
+}
+.lf-player-controls > div:last-child {
+  margin-right: 0px;
+}
+</style><style type="text/css">.lf-progress {
+  -webkit-appearance: none;
+  -moz-apperance: none;
+  width: 100%;
+  /* margin: 0 10px; */
+  height: 4px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.lf-progress:focus {
+  outline: none;
+  border: none;
+}
+.lf-progress::-moz-range-track {
+  cursor: pointer;
+  background: none;
+  border: none;
+  outline: none;
+}
+.lf-progress::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  height: 13px;
+  width: 13px;
+  border: 0;
+  border-radius: 50%;
+  background: #0fccce;
+  cursor: pointer;
+}
+.lf-progress::-moz-range-thumb {
+  -moz-appearance: none !important;
+  height: 13px;
+  width: 13px;
+  border: 0;
+  border-radius: 50%;
+  background: #0fccce;
+  cursor: pointer;
+}
+.lf-progress::-ms-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+.lf-progress::-ms-fill-lower {
+  background: #ccc;
+  border-radius: 3px;
+}
+.lf-progress::-ms-fill-upper {
+  background: #ccc;
+  border-radius: 3px;
+}
+.lf-progress::-ms-thumb {
+  border: 0;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: #0fccce;
+  cursor: pointer;
+}
+.lf-progress:focus::-ms-fill-lower {
+  background: #ccc;
+}
+.lf-progress:focus::-ms-fill-upper {
+  background: #ccc;
+}
+.lf-player-container :focus {
+  outline: 0;
+}
+.lf-popover {
+  position: relative;
+}
+
+.lf-popover-content {
+  display: inline-block;
+  position: absolute;
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -10px);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+}
+
+.lf-popover-content.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(0, 0px);
+}
+
+.lf-player-btn-container {
+  display: flex;
+  align-items: center;
+}
+.lf-player-btn {
+  cursor: pointer;
+  fill: #999;
+  width: 14px;
+}
+
+.lf-player-btn.active {
+  fill: #555;
+}
+
+.lf-popover {
+  position: relative;
+}
+
+.lf-popover-content {
+  display: inline-block;
+  position: absolute;
+  background-color: #ffffff;
+  opacity: 1;
+
+  transform: translate(0, -10px);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+  padding: 10px;
+}
+
+.lf-popover-content.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(0, 0px);
+}
+
+.lf-arrow {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  bottom: -9px;
+  border-style: solid;
+  border-width: 10px 10px 0px 10px;
+}
+
+.lf-left-align,
+.lf-left-align .lfarrow {
+  left: 0;
+  right: unset;
+}
+
+.lf-right-align,
+.lf-right-align .lf-arrow {
+  right: 0;
+  left: unset;
+}
+
+.lf-text-input {
+  border: 1px #ccc solid;
+  border-radius: 5px;
+  padding: 3px;
+  width: 60px;
+  margin: 0;
+}
+
+.lf-color-picker {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 90px;
+}
+
+.lf-color-selectors {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.lf-color-component {
+  display: flex;
+  flex-direction: row;
+  font-size: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.lf-color-component strong {
+  width: 40px;
+}
+
+.lf-color-component input[type='range'] {
+  margin: 0 0 0 10px;
+}
+
+.lf-color-component input[type='number'] {
+  width: 50px;
+  margin: 0 0 0 10px;
+}
+
+.lf-color-preview {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 5px;
+}
+
+.lf-preview {
+  height: 60px;
+  width: 60px;
+}
+
+.lf-popover-snapshot {
+  width: 150px;
+}
+.lf-popover-snapshot h5 {
+  margin: 5px 0 10px 0;
+  font-size: 0.75rem;
+}
+.lf-popover-snapshot a {
+  display: block;
+  text-decoration: none;
+}
+.lf-popover-snapshot a:before {
+  content: '⥼';
+  margin-right: 5px;
+}
+.lf-popover-snapshot .lf-note {
+  display: block;
+  margin-top: 10px;
+  color: #999;
+}
+.lf-player-controls > div {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+.lf-player-controls > div:first-child {
+  margin-left: 0px;
+}
+.lf-player-controls > div:last-child {
+  margin-right: 0px;
+}
+</style></head>
 <body>
     <div class="container">
         <div class="header">
             <img src="logo.png" alt="Logo" class="logo">
-            <h2>DAILY SITE REPORT</h2><br>
+            <div>
+                <h2>DAILY SITE REPORT</h2>
+                <!--  <p style="font-size: 14px; margin: 0;">Client: <span id="clientName">Occidental of Oman Inc.</span><br>Contract: <span id="contractName">General Facilities Service Contract.</span></p>  -->
+            </div>
         </div>
 
         <form id="reportForm">
             <!-- Single Entry Fields -->
             <div class="form-group">
                 <label for="date">Date:</label>
-                <input type="date" id="date" name="date" required>
+                <input type="date" id="date" name="date" required="">
             </div>
+
+            <!-- Permit Details -->
+            <div class="form-group">
+                <label for="permitDetails">Permit Details:</label>
+                <div class="resource-entry">
+                    <input type="text" id="permitNumber" placeholder="Permit Number" required="">
+                    <input type="time" id="validationTime" placeholder="Validation Time" required="">
+                    <input type="time" id="suspensionTime" placeholder="Suspension Time" required="">
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="foremanName">Foreman Name:</label>
-                <input type="text" id="foremanName" name="foremanName" required>
+                <input type="text" id="foremanName" name="foremanName" required="">
             </div>
             <div class="form-group">
                 <label for="foremanID">Foreman ID:</label>
-                <input type="text" id="foremanID" name="foremanID" required>
+                <input type="text" id="foremanID" name="foremanID" required="">
             </div>
             <div class="form-group">
                 <label for="wiReference">WI No:</label>
-                <input type="text" id="wiReference" name="wiReference" required>
+                <input type="text" id="wiReference" name="wiReference" required="">
             </div>
             <div class="form-group">
                 <label for="wiTitle">WI Title:</label>
-                <input type="text" id="wiTitle" name="wiTitle" required>
-            </div>
-            <div class="form-group">
-                <label for="description">Description of Work:</label>
-                <textarea id="description" name="description" rows="4" required></textarea>
+                <input type="text" id="wiTitle" name="wiTitle" required="">
             </div>
 
-            <!-- Multiple Entry Fields -->
+            <!-- Discipline Dropdown -->
             <div class="form-group">
-                <h3>Resource Details</h3>
+                <label for="discipline">Discipline:</label>
+                <select id="discipline" name="discipline" required="">
+                    <option value="Other">Other</option>
+                    <option value="Civil Works">Civil Works</option>
+                    <option value="Piping, Structural &amp; Mechanical">Piping, Structural &amp; Mechanical</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Instrumentation">Instrumentation</option>
+                    <option value="Commissioning">Commissioning</option>
+                    <option value="Scaffolding">Scaffolding</option>
+                    <option value="Vendor Support">Vendor Support</option>
+                    <option value="Demolition">Demolition</option>
+                    <option value="Shutdown">Shutdown</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description of Work:</label>
+                <textarea id="description" name="description" rows="4" required=""></textarea>
+            </div>
+
+            <!-- Resource Details -->
+            <div class="form-group">
+                <label for="resourceDetails">Resource Details:</label>
                 <table id="personnelTable">
                     <thead>
                         <tr>
                             <th>Resource ID</th>
-                            <th>Normal Hours</th>
-                            <th>OT Hours</th>
+                            <th>Time-In</th>
+                            <th>Time-Out</th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- Entries will be added here dynamically -->
                     </tbody>
                 </table>
-
-                <!-- Button Container -->
                 <div class="button-container">
                     <button type="button" class="btn btn-add" onclick="openModal()">Add Resource</button>
                     <button type="button" class="btn btn-remove" onclick="removeLastPersonnel()">Remove</button>
                 </div>
+            </div>
+
+            <!-- Issues & Delays -->
+            <div class="form-group">
+                <label for="issuesDelays">Issues &amp; Delays:</label>
+                <select id="issuesDelays" required="">
+                    <option value="Normal" selected="">Normal</option>
+                    <option value="Technical Challenges">Technical Challenges</option>
+                    <option value="Weather Delays">Weather Delays</option>
+                    <option value="Material / Equipment Shortage">Material / Equipment Shortage</option>
+                    <option value="Manpower Shortage">Manpower Shortage</option>
+                    <option value="Safety Incidents">Safety Incidents</option>
+                    <option value="Heat Stress Break">Heat Stress Break</option>
+                    <option value="Ramadan Break">Ramadan Break</option>
+                    <option value="Equipment Failure">Equipment Failure</option>
+                    <option value="Permit Delay">Permit Delay</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <!-- Notes
+            <div class="form-group">
+                <label for="notes">Notes (Optional):</label>
+                <textarea id="notes" name="notes" rows="4"></textarea>
             </div>
 
             <!-- Submit Button -->
@@ -211,13 +733,13 @@
     <div id="resourceModal" class="modal">
         <div class="modal-content">
             <label for="modalResourceID">Resource ID:</label>
-            <input type="text" id="modalResourceID" placeholder="Enter Resource ID" required>
+            <input type="text" id="modalResourceID" placeholder="Enter Resource ID" required="">
 
-            <label for="modalNormalHours">Normal Hours:</label>
-            <input type="number" id="modalNormalHours" placeholder="Enter Normal Hours" value="10" required>
+            <label for="modalTimeIn">Time-in:</label>
+            <input type="time" id="modalTimeIn" placeholder="Enter Time-in" required="">
 
-            <label for="modalOTHours">OT Hours:</label>
-            <input type="number" id="modalOTHours" placeholder="Enter OT Hours" value="0" required>
+            <label for="modalTimeOut">Time-out:</label>
+            <input type="time" id="modalTimeOut" placeholder="Enter Time-out" required="">
 
             <div class="modal-buttons">
                 <button class="btn-confirm" onclick="addResource()">Confirm</button>
@@ -228,12 +750,16 @@
 
     <script>
         let personnelEntries = [];
+        let defaultTimeIn = null;
+        let defaultTimeOut = null;
 
         // Function to open the modal
         function openModal() {
-            // Set default values for Normal Hours and OT Hours
-            document.getElementById("modalNormalHours").value = 10;
-            document.getElementById("modalOTHours").value = 0;
+            // Set default Time-in and Time-out if available
+            if (defaultTimeIn && defaultTimeOut) {
+                document.getElementById("modalTimeIn").value = defaultTimeIn;
+                document.getElementById("modalTimeOut").value = defaultTimeOut;
+            }
             document.getElementById("resourceModal").style.display = "flex";
         }
 
@@ -241,21 +767,27 @@
         function closeModal() {
             document.getElementById("resourceModal").style.display = "none";
             document.getElementById("modalResourceID").value = ""; // Clear input
-            document.getElementById("modalNormalHours").value = 10; // Reset to default
-            document.getElementById("modalOTHours").value = 0; // Reset to default
+            document.getElementById("modalTimeIn").value = ""; // Reset
+            document.getElementById("modalTimeOut").value = ""; // Reset
         }
 
         // Add resource to the table
         function addResource() {
             const resourceID = document.getElementById("modalResourceID").value;
-            const normalHours = document.getElementById("modalNormalHours").value;
-            const otHours = document.getElementById("modalOTHours").value;
+            const timeIn = document.getElementById("modalTimeIn").value;
+            const timeOut = document.getElementById("modalTimeOut").value;
 
-            if (resourceID && normalHours && otHours) {
+            if (resourceID && timeIn && timeOut) {
+                // Set default Time-in and Time-out from the first resource
+                if (personnelEntries.length === 0) {
+                    defaultTimeIn = timeIn;
+                    defaultTimeOut = timeOut;
+                }
+
                 personnelEntries.push({
                     id: resourceID,
-                    normalHours: normalHours,
-                    otHours: otHours
+                    timeIn: timeIn,
+                    timeOut: timeOut
                 });
                 updatePersonnelTable();
                 closeModal(); // Close the modal after adding
@@ -280,8 +812,8 @@
             tbody.innerHTML = personnelEntries.map(entry => `
                 <tr>
                     <td>${entry.id}</td>
-                    <td>${entry.normalHours}</td>
-                    <td>${entry.otHours}</td>
+                    <td>${entry.timeIn}</td>
+                    <td>${entry.timeOut}</td>
                 </tr>
             `).join("");
         }
@@ -307,8 +839,14 @@
                 foremanID: document.getElementById("foremanID").value,
                 wiReference: document.getElementById("wiReference").value,
                 wiTitle: document.getElementById("wiTitle").value,
+                discipline: document.getElementById("discipline").value,
                 description: document.getElementById("description").value,
                 personnel: personnelEntries,
+                permitNumber: document.getElementById("permitNumber").value,
+                validationTime: document.getElementById("validationTime").value,
+                suspensionTime: document.getElementById("suspensionTime").value,
+                issuesDelays: document.getElementById("issuesDelays").value,
+//              notes: document.getElementById("notes").value,
                 postingDateTime: postingDateTime,
                 deviceDetails: {
                     userAgent: navigator.userAgent,
@@ -321,13 +859,15 @@
                 queryParams.set(key, typeof value === "object" ? JSON.stringify(value) : value);
             }
 
-            fetch(`https://script.google.com/macros/s/AKfycbxD7mtP_KYnIkmXLQb1gny2sxI9LdEmN1vWuuzp_8zZsOMSJH3qnUPF_9rjAJ9g_WR7/exec?${queryParams.toString()}`, {
+            fetch(`https://script.google.com/macros/s/AKfycbzA8cDlE4qB3Kq7Y5fZ4VODQjX1GgfVktREUpQhpsspKUQVaEKfLtAzBa43VvcXBcDV-w/exec?${queryParams.toString()}`, {
                 method: "GET",
             })
             .then(response => response.text())
             .then(data => {
                 alert("Data Submitted Successfully!");
                 personnelEntries = [];
+                defaultTimeIn = null;
+                defaultTimeOut = null;
                 updatePersonnelTable();
                 document.getElementById("reportForm").reset();
             })
@@ -340,5 +880,7 @@
             });
         };
     </script>
+
+
 </body>
 </html>
